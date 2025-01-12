@@ -1,0 +1,28 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure user viewed CosmosDB access keys
+description: |-
+  ## Goal
+  Detect when a user successfully requests to view a CosmoDB access key using the Azure API. An attacker with the right privileges can access and manage the CosmoDB database.
+
+  ## Strategy
+  Monitor Azure CosmoDB logs where the event name is `"MICROSOFT.DOCUMENTDB/DATABASEACCOUNTS/LISTKEYS/ACTION"` and the outcome is `Success`.
+
+  ## Triage and response
+  1. Verify that the user should be viewing the access key for the specified CosmoDB database.
+  2. If the activity is not expected, investigate the related activities around the CosmoDB database.
+enabled: true
+severity: Medium
+query_text: |-
+  %ingest.source_type:azure.documentdb
+  operationName:"MICROSOFT.DOCUMENTDB/DATABASEACCOUNTS/LISTKEYS/ACTION"
+  resultType:Success
+  | count
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- techniques.t1580.cloud_infrastructure_discovery
+- tactics.ta0007.discovery

@@ -1,0 +1,33 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure user added to restricted management administrative unit
+description: |-
+  ## Goal
+
+  Detects the addition of Entra ID (Azure AD) users to restricted management Administrative Units (AUs). Restricted AUs limit modifications to members by users without specific role assignments. Adding a user to a restricted AU can jeopardize user containment during sensitive incidents and may suggest malicious activity.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for events related to Administrative Units categorized as "Add member to restricted management administrative unit" that involve a restricted administrative unit.
+
+  ## Triage and Response
+
+  1. Confirm if restricted administrative units are utilized by the organization.
+  2. Investigate any anomalous activity related to the user being added to the restricted administrative unit.
+  3. Assess if there is a valid reason for the user's addition to the restricted administrative unit.
+enabled: true
+severity: Medium
+query_text: |-
+  service:azure
+  %ingest.source_type:azure.activedirectory
+  properties.category:AdministrativeUnit
+  (operationName:"Add member to restricted management administrative unit")
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count >= 1
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

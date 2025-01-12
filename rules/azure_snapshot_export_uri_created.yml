@@ -1,0 +1,28 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure snapshot export URI created
+description: |-
+  ## Goal
+  Detect if an Azure snapshot is exported, as the export URLs are accessible to anyone with the link.
+
+  ## Strategy
+  Monitor Azure logs where the event name is "MICROSOFT.COMPUTE/SNAPSHOTS/BEGINGETACCESS/ACTION" and the outcome is "Success".
+
+  ## Triage and Response
+  1. Verify the snapshot has a legitimate reason for being exported.
+  2. If the activity is unexpected, investigate the IP address that created the export URL.
+enabled: true
+severity: Medium
+query_text: |-
+  %ingest.source_type:azure.compute
+  operationName:"MICROSOFT.COMPUTE/SNAPSHOTS/BEGINGETACCESS/ACTION"
+  resultType:Success
+  | count
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- tactics.ta0009.collection
+- techniques.t1074.data_staged

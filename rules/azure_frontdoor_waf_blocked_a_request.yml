@@ -1,0 +1,28 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure Frontdoor WAF Blocked a Request
+description: |-
+  ## Goal
+  Detect when an Azure Frontdoor Web Application Firewall (WAF) blocks a request from an IP address.
+
+  ## Strategy
+  This rule monitors Azure Activity logs for Frontdoor Web Application Firewall logs and detects when the event name is `Microsoft.Network/FrontDoor/WebApplicationFirewallLog/Write` and the action is `Block`.
+
+  ## Triage and response
+  1. Inspect whether this request should have been blocked.
+  2. Navigate to the IP dashboard and review other requests made by this IP address.
+enabled: true
+severity: Informational
+query_text: |-
+  %ingest.source_type:azure.network
+  operationName:"Microsoft.Network/FrontDoor/WebApplicationFirewallLog/Write"
+  properties.action:Block
+  | groupbycount(properties.clientIP)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure
+- techniques.t1190.exploit_public_facing_application
+- tactics.ta0001.initial_access

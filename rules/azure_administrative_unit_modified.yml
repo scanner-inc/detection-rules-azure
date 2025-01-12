@@ -1,0 +1,33 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure administrative unit modified
+description: |-
+  ## Goal
+
+  Detect modifications of Entra ID Administrative Units (AUs), as such changes may signal suspicious activity in environments not utilizing AUs.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for the category "Administrative Unit" and events indicating an update, restoration, deletion, or hard deletion of an administrative unit, ensuring the event is not related to a restricted administrative unit.
+
+  ## Triage and response
+
+  1. Check if your organization uses administrative units.
+  2. Investigate any anomalous activity by the user modifying an administrative unit.
+  3. Assess whether there is a legitimate reason for the modification.
+enabled: true
+severity: Low
+query_text: |-
+  service:azure
+  %ingest.source_type:azure.activedirectory
+  properties.category:AdministrativeUnit
+  operationName:("Update administrative unit" "Restore administrative unit" "Delete administrative unit" "Hard delete administrative unit")
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count >= 1
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- low_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

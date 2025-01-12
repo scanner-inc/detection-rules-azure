@@ -1,0 +1,33 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure user removed from restricted administrative unit
+description: |-
+  ## Goal
+
+  Detect the removal of Entra ID (Azure AD) users from restricted management Administrative Units (AUs), which are designed to protect certain users from being modified by unauthorized personnel.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for events related to removing members from restricted management administrative units.
+
+  ## Triage and response
+
+  1. Check if restricted administrative units are in use by the organization.
+  2. Investigate any suspicious activity for the user being removed.
+  3. Assess if there is a valid reason for the user's removal from the restricted administrative unit.
+enabled: true
+severity: Low
+query_text: |-
+  service:azure
+  %ingest.source_type:azure.activedirectory
+  properties.category:AdministrativeUnit
+  operationName:"Remove member from restricted management administrative unit"
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count >= 1
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- low_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

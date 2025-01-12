@@ -1,0 +1,33 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure Network Security Groups or Rules Created, Modified, or Deleted
+description: |
+  ## Goal
+  Detect changes to Azure network security groups or rules.
+
+  ## Strategy
+  Monitor Azure activity logs for events where the event name is:
+  - NETWORKSECURITYGROUPS/WRITE
+  - NETWORKSECURITYGROUPS/DELETE
+  - NETWORKSECURITYGROUPS/SECURITYRULES/WRITE
+  - NETWORKSECURITYGROUPS/SECURITYRULES/DELETE
+
+  and the outcome is Success.
+
+  ## Triage and response
+  Inspect the security group or rule to determine if it exposes any Azure resources inappropriately.
+enabled: true
+severity: Informational
+query_text: |-
+  %ingest.source_type:azure.network
+  operationName:("MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/WRITE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/DELETE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/DELETE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/WRITE")
+  resultType:Success
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure
+- techniques.t1562.impair_defenses
+- tactics.ta0005.defense_evasion

@@ -1,0 +1,31 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure SQL Server Firewall Rules Created or Modified
+description: |-
+  ## Goal
+  Detect when an Azure network security rule has been created, modified, or deleted.
+
+  ## Strategy
+  Monitor Azure activity logs for events where the event name is either:
+  - NETWORKSECURITYGROUPS/SECURITYRULES/WRITE
+  - NETWORKSECURITYGROUPS/SECURITYRULES/DELETE
+
+  and the outcome is Success.
+
+  ## Triage and response
+  Inspect the security rule to determine if it exposes any Azure resources that should remain private.
+enabled: true
+severity: Informational
+query_text: |-
+  %ingest.source_type:azure.sql
+  operationName:"MICROSOFT.SQL/SERVERS/FIREWALLRULES/WRITE"
+  resultType:Success
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure
+- techniques.t1562.impair_defenses
+- tactics.ta0005.defense_evasion

@@ -1,0 +1,32 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure New Service Principal created
+description: |-
+  ## Goal
+
+  Detect the creation of a new service principal in Azure, which applies to a persistence mechanism.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for events where the event name is "Add service principal" and the outcome is "Success."
+
+  ## Triage and response
+
+  1. Inspect the new service principal in the target resources.
+  2. Verify with the user to determine if the service principal is legitimate.
+enabled: true
+severity: Medium
+query_text: |-
+  %ingest.source_type:azure.activedirectory
+  operationName:"Add service principal"
+  resultType:success
+  properties.initiatedBy.user.userPrincipalName:*
+  | count
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

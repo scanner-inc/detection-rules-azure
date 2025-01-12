@@ -1,0 +1,28 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure diagnostic setting deleted or disabled
+description: |-
+  ## Goal
+  Detect when a diagnostic setting is deleted, which can disable centralized logging and metrics on Azure.
+
+  ## Strategy
+  Monitor Azure logs where the event name is "MICROSOFT.INSIGHTS/DIAGNOSTICSETTINGS/DELETE" and the outcome is "Success".
+
+  ## Triage and response
+  1. Inspect the diagnostic setting resource found in the resource ID.
+  2. Verify the user to determine if the removal of the resource is legitimate.
+enabled: true
+severity: Informational
+query_text: |-
+  service:azure
+  operationName:"MICROSOFT.INSIGHTS/DIAGNOSTICSETTINGS/DELETE"
+  resultType:Success
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure
+- techniques.t1562.impair_defenses
+- tactics.ta0005.defense_evasion

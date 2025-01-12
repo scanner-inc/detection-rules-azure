@@ -1,0 +1,38 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure Service Principal was assigned a role
+description: |-
+  ## Goal
+  Detect an Azure service principal being assigned an Azure role.
+
+  ## Strategy
+  Monitor Azure Activity logs for the following operations:
+
+  - Event name: "MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE"
+  - Request body includes: "Service Principal"
+
+  ## Triage and response
+  1. Verify the legitimacy of the activity by investigating the:
+    * Source IP of the activity
+    * User who made the request
+    * Role that was assigned to the application or service principal.
+  2. If the user should not be assigning this Azure role and the service principal should not be assigned this role:
+    * Revoke access of compromised credentials.
+    * Remove unauthorized app registration or service principal.
+    * Investigate other activities performed by the source IP.
+    * Investigate other activities performed by the user.
+enabled: true
+severity: Low
+query_text: |-
+  %ingest.source_type:azure.authorization
+  operationName:"MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE"
+  properties.requestbody:*ServicePrincipal*
+  | groupbycount(identity.authorization.evidence.principalId, clientIpAddress)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- low_severity_alerts
+tags:
+- tactics.ta0004.privilege_escalation
+- source.azure
+- techniques.t1098.account_manipulation

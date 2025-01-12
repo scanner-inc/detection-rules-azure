@@ -1,0 +1,28 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure disk export URI created
+description: |-
+  ## Goal
+  Detect when an Azure disk is successfully exported. Export URLs generated in Azure are accessible to anyone with the URI, which could be exploited to download an Azure Compute VM's disk as a VHD file.
+
+  ## Strategy
+  Monitor Azure logs where the event name is "MICROSOFT.COMPUTE/DISKS/BEGINGETACCESS/ACTION" and the outcome is "Success."
+
+  ## Triage and response
+  1. Verify the disk has a legitimate reason for being exported.
+  2. If the activity is not expected, investigate the activity around the IP creating the export URI.
+enabled: true
+severity: High
+query_text: |-
+  %ingest.source_type:azure.compute
+  operationName:"MICROSOFT.COMPUTE/DISKS/BEGINGETACCESS/ACTION"
+  resultType:Success
+  | groupbycount(resourceId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- high_severity_alerts
+tags:
+- source.azure
+- tactics.ta0009.collection
+- techniques.t1074.data_staged

@@ -1,0 +1,25 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure Policy Assignment Created
+description: |-
+  ## Goal
+  Detect the creation of an Azure policy assignment.
+
+  ## Strategy
+  Monitor Azure activity logs for events with the event name `MICROSOFT.AUTHORIZATION/POLICYASSIGNMENTS/WRITE` and a successful outcome.
+
+  ## Triage and response
+  Inspect the policy assignment to determine if an unsolicited change was made to any Azure resources.
+enabled: true
+severity: Informational
+query_text: |-
+  %ingest.source_type:azure
+  operationName:"MICROSOFT.AUTHORIZATION/POLICYASSIGNMENTS/WRITE"
+  resultType:Success
+  | groupbycount(clientIpAddress)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure

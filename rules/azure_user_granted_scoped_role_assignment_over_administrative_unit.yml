@@ -1,0 +1,33 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure user granted scoped role assignment over administrative unit
+description: |-
+  ## Goal
+
+  Detect scoped Entra ID (Azure AD) role assignments over an Administrative Unit (AU), as this may indicate suspicious activity if AUs are not used in the environment.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for "AdministrativeUnit" in the properties category and either "Add scoped member to role" or "Add member to role scoped over Restricted Management Administrative Unit" events that involve a restricted administrative unit.
+
+  ## Triage and response
+
+  1. Verify if restricted administrative units are utilized by the organization.
+  2. Investigate any anomalous activity related to the user granted role assignment to the restricted administrative unit.
+  3. Assess whether there is a legitimate reason for the user's role assignment to the restricted administrative unit.
+enabled: true
+severity: Medium
+query_text: |-
+  service:azure
+  %ingest.source_type:azure.activedirectory
+  properties.category:RoleManagement
+  operationName:("Add scoped member to role" "Add member to role scoped over Restricted Management Administrative Unit")
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count >= 1
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

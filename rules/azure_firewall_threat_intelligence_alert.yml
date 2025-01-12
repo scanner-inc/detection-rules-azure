@@ -1,0 +1,25 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure Firewall Threat Intelligence Alert
+description: |-
+  ## Goal
+  Detect when an Azure firewall threat intelligence alert is received.
+
+  ## Strategy
+  Monitor Azure Network Diagnostic logs for events where the event name is "AzureFirewallThreatIntelLog."
+
+  ## Triage and response
+  1. Inspect the threat intelligence log.
+  2. Investigate the activity from the identified IP address.
+enabled: true
+severity: Informational
+query_text: |-
+  %ingest.source_type:azure.network
+  operationName:AzureFirewallThreatIntelLog
+  | groupbycount(clientIpAddress)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- informational_severity_alerts
+tags:
+- source.azure

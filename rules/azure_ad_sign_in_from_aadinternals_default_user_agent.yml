@@ -1,0 +1,55 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure AD sign in from AADinternals default user agent
+description: |-
+  ## Goal
+  Detect the presence of the default user agent AADInternals in Azure AD sign-in logs.
+
+  ## Strategy
+  This rule monitors Azure AD sign-in logs for the default user agent AADInternals, which can be modified. AADInternals is a PowerShell module designed for managing and exploiting Azure AD and Office 365, associated with several threat groups.
+
+  ## Triage and Response
+  1. Verify if your organization has authorized the use of the AADInternals toolkit.
+  2. If the investigation shows this tool is unauthorized, initiate your incident response process.
+      * If necessary, disable the affected identity and revoke any sign-in sessions.
+      * Examine any actions taken by the identity during the relevant time frame.
+enabled: true
+severity: High
+query_text: |-
+  %ingest.source_type:(azure.activedirectory microsoft-365)
+  properties.userAgent:AADInternals
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- high_severity_alerts
+tags:
+- techniques.t1059.command_and_scripting_interpreter
+- techniques.t1566.phishing
+- techniques.t1556.modify_authentication_process
+- source.azure
+- tactics.ta0002.execution
+- techniques.t1087.account_discovery
+- techniques.t1552.unsecured_credentials
+- techniques.t1069.permission_groups_discovery
+- tactics.ta0007.discovery
+- techniques.t1528.steal_application_access_token
+- tactics.ta0001.initial_access
+- tactics.ta0004.privilege_escalation
+- techniques.t1484.domain_or_tenant_policy_modification
+- techniques.t1098.account_manipulation
+- techniques.t1003.os_credential_dumping
+- techniques.t1136.create_account
+- techniques.t1112.modify_registry
+- techniques.t1530.data_from_cloud_storage
+- techniques.t1558.steal_or_forge_kerberos_tickets
+- tactics.ta0010.exfiltration
+- techniques.t1526.cloud_service_discovery
+- techniques.t1606.forge_web_credentials
+- tactics.ta0009.collection
+- tactics.ta0006.credential_access
+- techniques.t1048.exfiltration_over_alternative_protocol
+- techniques.t1651.cloud_administration_command
+- tactics.ta0005.defense_evasion
+- tactics.ta0003.persistence
+- techniques.t1649.steal_or_forge_authentication_certificates

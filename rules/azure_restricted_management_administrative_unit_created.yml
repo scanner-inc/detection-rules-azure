@@ -1,0 +1,34 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure restricted management administrative unit created
+description: |-
+  ## Goal
+
+  Detect the creation of restricted management Administrative Units (AUs) in Entra ID (Azure AD). These restricted AUs prevent unauthorized users from modifying target users who are members, which can affect user containment during sensitive incidents and may indicate malicious activity.
+
+  ## Strategy
+
+  Monitor Azure Active Directory logs for events related to Administrative Units and when an administrative unit is created, focusing on restricted administrative units.
+
+  ## Triage and response
+
+  1. Confirm if restricted administrative units are utilized by the organization.
+  2. Investigate any anomalous activity by the user who created the restricted administrative unit.
+  3. Assess if there is a valid reason for the creation of the restricted administrative unit by the user.
+enabled: true
+severity: Low
+query_text: |-
+  service:azure
+  %ingest.source_type:azure.activedirectory
+  properties.category:AdministrativeUnit
+  operationName:"Add administrative unit"
+  properties.targetResources.modifiedProperties.displayName:IsMemberManagementRestricted
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count >= 1
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- low_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence

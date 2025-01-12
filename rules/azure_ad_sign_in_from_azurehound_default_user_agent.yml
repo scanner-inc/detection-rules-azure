@@ -1,0 +1,30 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure AD sign in from AzureHound default user agent
+description: |-
+  ## Goal
+  Detect when the default user agent "AzureHound" is seen in Azure AD sign-in logs.
+
+  ## Strategy
+  This rule monitors Azure AD sign-in logs for the default user agent "AzureHound," a data collector for Bloodhound, an Active Directory reconnaissance tool that reveals hidden relationships and identifies attack paths within an AD environment. It is associated with MITRE ATT&CK and linked to various threat groups.
+
+  ## Triage and response
+  1. Determine if your organization has authorized the use of Bloodhound.
+  2. If the triage indicates that this tool is unauthorized, initiate your company's incident response process and investigation.
+      * If necessary, disable the affected identity and revoke any sign-in sessions.
+      * Investigate any actions taken by the identity during the identified time frame.
+enabled: true
+severity: High
+query_text: |-
+  %ingest.source_type:(azure.activedirectory microsoft-365)
+  properties.userAgent:*azurehound*
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- high_severity_alerts
+tags:
+- source.azure
+- techniques.t1087.account_discovery
+- techniques.t1069.permission_groups_discovery
+- tactics.ta0007.discovery

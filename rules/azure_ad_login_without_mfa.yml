@@ -1,0 +1,36 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure AD Login Without MFA
+description: |-
+  ## Goal
+  Detect when any user logs in to Azure AD without multi-factor authentication.
+
+  ## Strategy
+  This rule monitors Azure Activity logs for Active Directory and detects when the event category is "SignInLogs" and the authentication requirement is "singleFactorAuthentication."
+
+  ## Triage and response
+  1. Reach out to the user to confirm if the login was legitimate.
+  2. If legitimate, request the user enable 2FA.
+  3. If not legitimate, rotate the credentials.
+  4. Review all user accounts to ensure MFA is enabled.
+enabled: true
+severity: Low
+query_text: |-
+  %ingest.source_type:azure.activedirectory
+  category:SignInLogs
+  properties.authenticationRequirement:singleFactorAuthentication
+  resultType:success
+  properties.authenticationDetails.authenticationStepRequirement:"Primary authentication"
+  (not (properties.authenticationDetails.authenticationMethod:"Previously satisfied"
+  properties.authenticationDetails.authenticationStepResultDetail:("First factor requirement satisfied by claim in the token" "Requirement satisfied by claim in the token")))
+  (not resultDescription:("MFA requirement satisfied by claim in the token" "MFA requirement satisfied by strong authentication" "MFA requirement skipped due to remembered device" "MFA requirement satisfied by claim provided by external provider"))
+  (not properties.authenticationDetails.authenticationMethod:"Windows Hello for Business")
+  | groupbycount(identity.authorization.evidence.principalId)
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- low_severity_alerts
+tags:
+- source.azure
+- techniques.t1078.valid_accounts
+- tactics.ta0001.initial_access

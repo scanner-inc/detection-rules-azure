@@ -1,0 +1,30 @@
+# schema: https://scanner.dev/schema/scanner-detection-rule.v1.json
+name: Azure New Owner added to Azure Active Directory application
+description: |-
+  ## Goal
+  Detect when a user is added as a new owner for an Active Directory application, which could be used for persistence.
+
+  ## Strategy
+  Monitor Azure Active Directory logs for the event name "Add owner to application" with a successful outcome.
+
+  ## Triage and Response
+  1. Review evidence of anomalous activity for the user being added as an owner for the Active Directory application.
+  2. Determine if there is a legitimate reason for the user being added to the application.
+enabled: true
+severity: Medium
+query_text: |-
+  %ingest.source_type:azure.activedirectory
+  operationName:"Add owner to application"
+  resultType:success
+  properties.initiatedBy.user.userPrincipalName:*
+  (not identity:*)
+  | count
+  | where @q.count > 0
+time_range_s: 300
+run_frequency_s: 60
+event_sink_keys:
+- medium_severity_alerts
+tags:
+- source.azure
+- techniques.t1098.account_manipulation
+- tactics.ta0003.persistence
