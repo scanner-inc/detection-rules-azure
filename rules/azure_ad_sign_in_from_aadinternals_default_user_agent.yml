@@ -36,12 +36,12 @@ tags:
 - techniques.t1528.steal_application_access_token
 - tactics.ta0001.initial_access
 - tactics.ta0004.privilege_escalation
-- techniques.t1484.domain_or_tenant_policy_modification
+- techniques.t1484.domain_policy_modification
 - techniques.t1098.account_manipulation
 - techniques.t1003.os_credential_dumping
 - techniques.t1136.create_account
 - techniques.t1112.modify_registry
-- techniques.t1530.data_from_cloud_storage
+- techniques.t1530.data_from_cloud_storage_object
 - techniques.t1558.steal_or_forge_kerberos_tickets
 - tactics.ta0010.exfiltration
 - techniques.t1526.cloud_service_discovery
