@@ -13,7 +13,7 @@ description: |-
 enabled: true
 severity: High
 query_text: |-
-  %ingest.source_type:azure.network
+  %ingest.source_type:azure
   operationName:"MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/WRITE"
   properties.securityRules.properties.direction:Inbound
   properties.securityRules.properties.access:Allow
