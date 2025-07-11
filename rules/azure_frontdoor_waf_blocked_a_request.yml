@@ -13,7 +13,7 @@ description: |-
 enabled: true
 severity: Informational
 query_text: |-
-  %ingest.source_type:azure.network
+  %ingest.source_type:azure
   operationName:"Microsoft.Network/FrontDoor/WebApplicationFirewallLog/Write"
   properties.action:Block
   | groupbycount(properties.clientIP)

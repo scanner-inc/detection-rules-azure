@@ -17,8 +17,7 @@ description: |-
 enabled: true
 severity: Low
 query_text: |-
-  service:azure
-  %ingest.source_type:azure.activedirectory
+  %ingest.source_type:azure
   properties.category:AdministrativeUnit
   operationName:("Update administrative unit" "Restore administrative unit" "Delete administrative unit" "Hard delete administrative unit")
   | groupbycount(identity.authorization.evidence.principalId)
