@@ -17,8 +17,7 @@ description: |-
 enabled: true
 severity: Medium
 query_text: |-
-  service:azure
-  %ingest.source_type:azure.activedirectory
+  %ingest.source_type:azure
   properties.category:AdministrativeUnit
   (operationName:"Add member to restricted management administrative unit")
   | groupbycount(identity.authorization.evidence.principalId)

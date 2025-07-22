@@ -18,7 +18,7 @@ description: |
 enabled: true
 severity: Informational
 query_text: |-
-  %ingest.source_type:azure.network
+  %ingest.source_type:azure
   operationName:("MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/WRITE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/SECURITYRULES/DELETE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/DELETE" "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/WRITE")
   resultType:Success
   | groupbycount(identity.authorization.evidence.principalId)
