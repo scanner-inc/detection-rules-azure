@@ -17,7 +17,7 @@ description: |-
 enabled: true
 severity: Medium
 query_text: |-
-  %ingest.source_type:azure
+  @scnr.source_type:azure
   properties.category:RoleManagement
   operationName:("Add scoped member to role" "Add member to role scoped over Restricted Management Administrative Unit")
   | groupbycount(identity.authorization.evidence.principalId)

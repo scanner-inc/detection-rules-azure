@@ -17,7 +17,7 @@ description: |-
 enabled: true
 severity: Low
 query_text: |-
-  %ingest.source_type:azure
+  @scnr.source_type:azure
   properties.category:AdministrativeUnit
   operationName:"Add administrative unit"
   properties.targetResources.modifiedProperties.displayName:IsMemberManagementRestricted
