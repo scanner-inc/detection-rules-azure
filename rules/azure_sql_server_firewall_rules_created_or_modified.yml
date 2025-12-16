@@ -16,7 +16,7 @@ description: |-
 enabled: true
 severity: Informational
 query_text: |-
-  %ingest.source_type:azure
+  @scnr.source_type:azure
   operationName:"MICROSOFT.SQL/SERVERS/FIREWALLRULES/WRITE"
   resultType:Success
   | groupbycount(identity.authorization.evidence.principalId)

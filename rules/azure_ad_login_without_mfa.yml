@@ -15,7 +15,7 @@ description: |-
 enabled: true
 severity: Low
 query_text: |-
-  %ingest.source_type:azure
+  @scnr.source_type:azure
   category:SignInLogs
   properties.authenticationRequirement:singleFactorAuthentication
   resultType:success
