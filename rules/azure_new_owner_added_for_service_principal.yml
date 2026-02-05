@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Confirm that the user has been added to a service principal in the target resources.
   2. Verify with the user to determine if the owner addition is legitimate.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

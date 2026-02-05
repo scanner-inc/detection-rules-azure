@@ -14,7 +14,6 @@ description: |-
   1. Verify if restricted administrative units are utilized by the organization.
   2. Investigate any anomalous activity related to the user granted role assignment to the restricted administrative unit.
   3. Assess whether there is a legitimate reason for the user's role assignment to the restricted administrative unit.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

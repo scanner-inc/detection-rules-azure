@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Verify that the user should be executing commands on the container.
   2. If the activity is not expected, investigate related activity around the container.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

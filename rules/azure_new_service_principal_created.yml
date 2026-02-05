@@ -13,7 +13,6 @@ description: |-
 
   1. Inspect the new service principal in the target resources.
   2. Verify with the user to determine if the service principal is legitimate.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

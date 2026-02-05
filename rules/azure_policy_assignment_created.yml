@@ -9,7 +9,6 @@ description: |-
 
   ## Triage and response
   Inspect the policy assignment to determine if an unsolicited change was made to any Azure resources.
-enabled: true
 severity: Informational
 query_text: |-
   @scnr.source_type:azure

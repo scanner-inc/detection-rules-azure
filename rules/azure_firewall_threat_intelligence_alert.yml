@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Inspect the threat intelligence log.
   2. Investigate the activity from the identified IP address.
-enabled: true
 severity: Informational
 query_text: |-
   @scnr.source_type:azure

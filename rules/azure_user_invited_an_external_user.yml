@@ -9,7 +9,6 @@ description: |-
 
   ## Triage and response
   Review the invitation and its recipient to confirm their validity.
-enabled: true
 severity: Low
 query_text: |-
   @scnr.source_type:azure

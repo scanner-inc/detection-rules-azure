@@ -10,7 +10,6 @@ description: |-
   ## Triage and Response
   1. Verify the snapshot has a legitimate reason for being exported.
   2. If the activity is unexpected, investigate the IP address that created the export URL.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

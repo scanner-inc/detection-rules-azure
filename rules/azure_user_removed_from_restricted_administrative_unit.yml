@@ -14,7 +14,6 @@ description: |-
   1. Check if restricted administrative units are in use by the organization.
   2. Investigate any suspicious activity for the user being removed.
   3. Assess if there is a valid reason for the user's removal from the restricted administrative unit.
-enabled: true
 severity: Low
 query_text: |-
   @scnr.source_type:azure

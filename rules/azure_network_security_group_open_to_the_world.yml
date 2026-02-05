@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Inspect which Virtual Machines are associated with this security group.
   2. Determine whether this security group and the VMs should permit inbound traffic from all IP addresses.
-enabled: true
 severity: High
 query_text: |-
   @scnr.source_type:azure

@@ -14,7 +14,6 @@ description: |-
   1. Check if your organization uses administrative units.
   2. Investigate any anomalous activity by the user modifying an administrative unit.
   3. Assess whether there is a legitimate reason for the modification.
-enabled: true
 severity: Low
 query_text: |-
   @scnr.source_type:azure

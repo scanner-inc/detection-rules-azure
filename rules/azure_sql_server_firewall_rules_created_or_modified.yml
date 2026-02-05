@@ -13,7 +13,6 @@ description: |-
 
   ## Triage and response
   Inspect the security rule to determine if it exposes any Azure resources that should remain private.
-enabled: true
 severity: Informational
 query_text: |-
   @scnr.source_type:azure

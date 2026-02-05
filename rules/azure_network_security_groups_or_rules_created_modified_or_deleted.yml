@@ -15,7 +15,6 @@ description: |
 
   ## Triage and response
   Inspect the security group or rule to determine if it exposes any Azure resources inappropriately.
-enabled: true
 severity: Informational
 query_text: |-
   @scnr.source_type:azure

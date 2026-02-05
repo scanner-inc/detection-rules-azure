@@ -14,7 +14,6 @@ description: |-
   1. Review if the organization uses administrative units.
   2. Investigate any anomalous activity associated with the user creating an administrative unit.
   3. Determine if there is a legitimate reason for the user's action in creating an administrative unit.
-enabled: true
 severity: Low
 query_text: |-
   @scnr.source_type:azure

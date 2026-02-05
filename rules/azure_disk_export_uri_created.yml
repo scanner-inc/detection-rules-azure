@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Verify the disk has a legitimate reason for being exported.
   2. If the activity is not expected, investigate the activity around the IP creating the export URI.
-enabled: true
 severity: High
 query_text: |-
   @scnr.source_type:azure

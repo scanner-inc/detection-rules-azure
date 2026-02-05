@@ -14,7 +14,6 @@ description: |-
   1. Confirm if restricted administrative units are utilized by the organization.
   2. Investigate any anomalous activity related to the user being added to the restricted administrative unit.
   3. Assess if there is a valid reason for the user's addition to the restricted administrative unit.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

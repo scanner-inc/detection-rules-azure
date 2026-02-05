@@ -12,7 +12,6 @@ description: |-
   2. If the investigation shows this tool is unauthorized, initiate your incident response process.
       * If necessary, disable the affected identity and revoke any sign-in sessions.
       * Examine any actions taken by the identity during the relevant time frame.
-enabled: true
 severity: High
 query_text: |-
   @scnr.source_type:(azure microsoft_365)

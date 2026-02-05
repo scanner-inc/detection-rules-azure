@@ -10,7 +10,6 @@ description: |-
   ## Triage and response
   1. Inspect whether this request should have been blocked.
   2. Navigate to the IP dashboard and review other requests made by this IP address.
-enabled: true
 severity: Informational
 query_text: |-
   @scnr.source_type:azure

@@ -10,7 +10,6 @@ description: |-
   ## Triage and Response
   1. Review evidence of anomalous activity for the user being added as an owner for the Active Directory application.
   2. Determine if there is a legitimate reason for the user being added to the application.
-enabled: true
 severity: Medium
 query_text: |-
   @scnr.source_type:azure

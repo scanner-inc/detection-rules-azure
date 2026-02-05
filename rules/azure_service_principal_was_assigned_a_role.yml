@@ -20,7 +20,6 @@ description: |-
     * Remove unauthorized app registration or service principal.
     * Investigate other activities performed by the source IP.
     * Investigate other activities performed by the user.
-enabled: true
 severity: Low
 query_text: |-
   @scnr.source_type:azure
